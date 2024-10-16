@@ -1,49 +1,19 @@
 class Distance {
-  // These 3 attribute can be only 1 so another must be null
-  final double? _cms;
-  final double? _meters;
-  final double?_kms;
+  final double _cms;
 
   // Use named Contructor
   // Only one can be use
-  Distance.cms(this._cms, [this._meters, this._kms]);
-  Distance.meters(this._meters, [this._cms, this._kms]);
-  Distance.kms(this._kms, [this._cms, this._meters]);
+  Distance.cms(double cms): this._cms = cms;
+  Distance.meters(double meters): this._cms = meters * 100;
+  Distance.kms(double kms): this._cms = kms * 100000;
   
   // Use getters
-  // calculate cms in case facing null variable
-  double get cms {
-    if (this._cms != null) {
-      return this._cms;
-    } else if (this._meters != null) {
-      return this._meters * 100;
-    } else {
-      return this._kms! * 100000;
-    }
-  }
-
-  double get meters {
-    if (this._meters != null) {
-      return this._meters;
-    } else if (this._cms != null) {
-      return this._cms / 100;
-    } else {
-      return this._kms! * 1000;
-    }
-  }
-
-  double get kms {
-    if (this._kms != null) {
-      return this._kms;
-    } else if (this._meters != null) {
-      return this._meters / 1000;
-    } else {
-      return this._cms! / 100000;
-    }
-  }
+  double get cms => this._cms;
+  double get meters => this._cms /100;
+  double get kms => this._cms /100000;
 
   // Use Operator overloading
-  Distance operator + (covariant Distance p) {
+  Distance operator + (Distance p) {
     return Distance.cms(this.cms + p.cms);
   }
 }
