@@ -17,6 +17,7 @@ class Employee {
   final double _baseSalary;
   final List<Skill> _skills;
   final int _yearsOfExperience;
+  final Address? _address;
 
   var salary = {
     "BaseSalary": 40000,
@@ -26,11 +27,11 @@ class Employee {
     "OTHER": 1000
   };
 
-  Employee(this._name, this._baseSalary, this._skills, this._yearsOfExperience);
+  Employee(this._name, this._baseSalary, this._skills, this._yearsOfExperience, [this._address]);
 
   // Q2. Update the constructor
   Employee.mobileDeveloper(
-      this._name, this._baseSalary, this._skills, this._yearsOfExperience) {
+      this._name, this._baseSalary, this._skills, this._yearsOfExperience, [this._address]) {
     _skills.addAll([Skill.FLUTTER, Skill.DART]);
   }
 
