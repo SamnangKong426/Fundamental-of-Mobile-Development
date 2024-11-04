@@ -1,0 +1,14 @@
+{
+  "menu_id": 1,
+  "items": {
+    "Burger": 5.99,
+    "Pizza": 8.99,
+    "Salad": 4.99,
+    "pasta": 3.0,
+    "Soda": 10.0,
+    "Coke": 2.0,
+    "Korko": 5.0,
+    "pepsi": 2.0,
+    "Soup": 4.0
+  }
+}

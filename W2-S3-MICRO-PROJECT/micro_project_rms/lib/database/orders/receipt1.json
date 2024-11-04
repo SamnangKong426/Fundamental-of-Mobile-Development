@@ -1,0 +1,7 @@
+{
+  "order": "1",
+  "items": ["Burger", "Pizza", "Salad", "pasta"],
+  "payment_method": "Cash",
+  "total_price": 22.97,
+  "date": "2024-11-04 07:07:20.119121"
+}
