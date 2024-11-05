@@ -25,18 +25,18 @@ This project is a simple command-line application written in Dart.
 
 1. Clone the repository to your local machine:
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/SamnangKong426/Fundamental-of-Mobile-Development.git
     ```
 2. Navigate to the project directory:
     ```sh
-    cd <project-directory>
+    cd .\Fundamental-of-Mobile-Development\W2-S3-MICRO-PROJECT\micro_project_rms\
     ```
 
 ### Usage
 
 1. Run the application:
     ```sh
-    dart lib/main.dart
+    dart lib/customer.dart
     ```
 
 2. Follow the on-screen instructions to interact with the system:
