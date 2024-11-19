@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screen/welcome.dart';
 import 'screen/temperature.dart';
+import 'screen/welcome.dart';
 
 class TemperatureApp extends StatefulWidget {
   const TemperatureApp({super.key});
@@ -37,7 +37,11 @@ class _TemperatureAppState extends State<TemperatureApp> {
             ),
           ),
           // pass callback to Welcome widget
-          child: (isStart) ? const Temperature() : Welcome(callBack: changeCallBack,),
+          child: (isStart)
+              ? const Temperature()
+              : Welcome(
+                  callBack: changeCallBack,
+                ),
         ),
       ),
     );

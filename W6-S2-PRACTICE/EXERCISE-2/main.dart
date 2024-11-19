@@ -43,7 +43,8 @@ class ProfileApp extends StatelessWidget {
           const SizedBox(height: 40),
           CircleAvatar(
             radius: 60,
-            backgroundImage: AssetImage(profileData.avatarUrl),
+            child: Image.asset(profileData.avatarUrl),
+            
           ),
           const SizedBox(height: 20),
           Center(

@@ -4,7 +4,7 @@ import '../model/profile_tile_model.dart';
 ProfileData ronanProfile = ProfileData(
     name: "Ronan",
     position: "Flutter Developer",
-    avatarUrl: 'assets/w5-s2/image.png',
+    avatarUrl: 'assets/w5-s2/aang.png',
     tiles: [
       TileData(
           icon: Icons.phone, title: "Phone Number", value: "+123 456 7890"),

@@ -3,5 +3,5 @@ class JokeData {
   final String description;
   bool isFavorite;
 
-  JokeData({required this.title, required this.description, required this.isFavorite});
+  JokeData({required this.title, required this.description, this.isFavorite = false});
 }
