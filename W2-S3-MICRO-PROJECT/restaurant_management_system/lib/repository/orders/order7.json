@@ -1,0 +1,1 @@
+{"id":7,"customer":"r","items":[{"id":1,"name":"Pizza","price":12.99,"type":"Food"},{"id":2,"name":"Burger","price":8.99,"type":"Food"},{"id":4,"name":"Pasta","price":10.99,"type":"Food"},{"id":5,"name":"Salad","price":7.99,"type":"Food"}],"totalPrice":40.96,"status":"Pending","paymentStatus":"Paid"}
