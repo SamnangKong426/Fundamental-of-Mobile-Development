@@ -6,6 +6,7 @@ import '../../../model/ride/locations.dart';
 import '../../../model/ride_pref/ride_pref.dart';
 import '../../../widgets/actions/bla_button.dart';
 import '../../../utils/animations_util.dart';
+import 'seat_selection_screen.dart';
 
 ///
 /// A Ride Preference From is a view to select:
@@ -110,111 +111,129 @@ class _RidePrefFormState extends State<RidePrefForm> {
     )));
   }
 
+  void navigateToSeatSelection(BuildContext context) async {
+    final selectedSeats = await Navigator.of(context).push<int>(
+      MaterialPageRoute(
+        builder: (context) => SeatSelectionScreen(initialSeats: requestedSeats),
+      ),
+    );
+    if (selectedSeats != null) {
+      setState(() {
+        requestedSeats = selectedSeats;
+      });
+    }
+  }
+
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
   @override
   Widget build(BuildContext context) {
     final DateFormat dateFormat = DateFormat('EEE d MMM');
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => navigateToLocationPicker(context, (location) {
-                  setState(() {
-                    departure = location;
-                  });
-                }),
-                child: AbsorbPointer(
-                  child: DropdownButton<Location>(
-                    hint: Text('Select Departure'),
-                    value: uniqueFakeLocations.contains(departure)
-                        ? departure
-                        : null,
-                    items: uniqueFakeLocations.map((location) {
-                      return DropdownMenuItem<Location>(
-                        value: location,
-                        child: Text(location.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {},
-                    icon: null, // Remove the dropdown icon
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => navigateToLocationPicker(context, (location) {
+                    setState(() {
+                      departure = location;
+                    });
+                  }),
+                  child: AbsorbPointer(
+                    child: DropdownButton<Location>(
+                      hint: Text('Select Departure'),
+                      value: uniqueFakeLocations.contains(departure)
+                          ? departure
+                          : null,
+                      items: uniqueFakeLocations.map((location) {
+                        return DropdownMenuItem<Location>(
+                          value: location,
+                          child: Text(location.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {},
+                      icon: null, // Remove the dropdown icon
+                    ),
                   ),
                 ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.swap_vert),
-              onPressed: switchLocations,
-            ),
-          ],
-        ),
-        GestureDetector(
-          onTap: () => navigateToLocationPicker(context, (location) {
-            setState(() {
-              arrival = location;
-            });
-          }),
-          child: AbsorbPointer(
-            child: DropdownButton<Location>(
-              hint: Text('Select Arrival'),
-              value: uniqueFakeLocations.contains(arrival) ? arrival : null,
-              items: uniqueFakeLocations.map((location) {
-                return DropdownMenuItem<Location>(
-                  value: location,
-                  child: Text(location.name),
-                );
-              }).toList(),
-              onChanged: (value) {},
-              icon: null, // Remove the dropdown icon
-            ),
+              IconButton(
+                icon: Icon(Icons.swap_vert),
+                onPressed: switchLocations,
+              ),
+            ],
           ),
-        ),
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.calendar_today_rounded),
-              onPressed: () => selectDate(context),
-            ),
-            Text(
-              dateFormat.format(departureDate),
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'Requested Seats',
-            icon: Icon(Icons.person),
-          ),
-          keyboardType: TextInputType.number,
-          onChanged: (value) {
-            setState(() {
-              requestedSeats = int.tryParse(value) ?? 1;
-            });
-          },
-        ),
-        BlaButton(
-          text: 'Search',
-          onPressed: isFormValid()
-              ? () {
-                  final ridePref = RidePref(
-                    departure: departure!,
-                    departureDate: departureDate,
-                    arrival: arrival!,
-                    requestedSeats: requestedSeats,
+          SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => navigateToLocationPicker(context, (location) {
+              setState(() {
+                arrival = location;
+              });
+            }),
+            child: AbsorbPointer(
+              child: DropdownButton<Location>(
+                hint: Text('Select Arrival'),
+                value: uniqueFakeLocations.contains(arrival) ? arrival : null,
+                items: uniqueFakeLocations.map((location) {
+                  return DropdownMenuItem<Location>(
+                    value: location,
+                    child: Text(location.name),
                   );
-                  // Add the ridePref to the history
-                  fakeRidePrefs.add(ridePref);
-                  Navigator.of(context).pop(ridePref); // Return the ridePref
-                }
-              : () {},
-        ),
-      ],
+                }).toList(),
+                onChanged: (value) {},
+                icon: null, // Remove the dropdown icon
+              ),
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.calendar_today_rounded),
+                onPressed: () => selectDate(context),
+              ),
+              Text(
+                dateFormat.format(departureDate),
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => navigateToSeatSelection(context),
+            child: Row(
+              children: [
+                Text('Seats:'),
+                SizedBox(width: 8),
+                Text('$requestedSeats', style: TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+          BlaButton(
+            text: 'Search',
+            onPressed: isFormValid()
+                ? () {
+                    final ridePref = RidePref(
+                      departure: departure!,
+                      departureDate: departureDate,
+                      arrival: arrival!,
+                      requestedSeats: requestedSeats,
+                    );
+                    // Add the ridePref to the history
+                    fakeRidePrefs.add(ridePref);
+                    Navigator.of(context).pop(ridePref); // Return the ridePref
+                  }
+                : () {},
+          ),
+        ],
+      ),
     );
   }
 }

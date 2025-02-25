@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/ride/ride.dart';
+import '../seat/seat_screen.dart';
 
 class RideScreen extends StatelessWidget {
   final List<Ride> rides;
@@ -20,7 +21,15 @@ class RideScreen extends StatelessWidget {
           return RideTile(
             ride: rides[index],
             onPressed: () {
-              onRideSelected(rides[index]);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SeatScreen(
+                  ride: rides[index],
+                  onSeatSelected: (seat) {
+                    onRideSelected(rides[index]);
+                    // Handle seat selection if needed
+                  },
+                ),
+              ));
             },
           );
         },
