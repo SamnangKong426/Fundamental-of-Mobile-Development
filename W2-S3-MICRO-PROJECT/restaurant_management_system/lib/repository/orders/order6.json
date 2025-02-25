@@ -1,0 +1,1 @@
+{"id":6,"customer":"hour","items":[{"id":1,"name":"Pizza","price":12.99,"type":"Food"},{"id":2,"name":"Burger","price":8.99,"type":"Food"},{"id":3,"name":"Coke","price":1.99,"type":"Drink"},{"id":7,"name":"Steak","price":19.99,"type":"Food"},{"id":6,"name":"Water","price":0.99,"type":"Drink"}],"totalPrice":44.949999999999996,"status":"Pending","paymentStatus":"Paid"}
