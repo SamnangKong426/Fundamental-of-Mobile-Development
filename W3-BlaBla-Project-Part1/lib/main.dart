@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:week_3_blabla_project/screens/test/location_picker_test_screen.dart';
+import 'screens/ride_pref/ride_pref_screen.dart';
 import 'theme/theme.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      home: const LocationPickerTestScreen()
+      home: Scaffold(body: RidePrefScreen()),
     );
   }
 }

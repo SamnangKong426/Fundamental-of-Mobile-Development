@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:week_3_blabla_project/dummy_data/dummy_data.dart';
+import 'package:week_3_blabla_project/widgets/navigation/location_picker.dart';
 import '../../../model/ride/locations.dart';
 import '../../../model/ride_pref/ride_pref.dart';
 import '../../../widgets/actions/bla_button.dart';
+import '../../../utils/animations_util.dart';
 
 ///
 /// A Ride Preference From is a view to select:
@@ -17,8 +19,22 @@ import '../../../widgets/actions/bla_button.dart';
 class RidePrefForm extends StatefulWidget {
   // The form can be created with an optional initial RidePref.
   final RidePref? initRidePref;
+  final Function(Location)? onLocationSelected;
 
-  const RidePrefForm({super.key, this.initRidePref});
+  const RidePrefForm({super.key, this.initRidePref, this.onLocationSelected});
+
+  // Add this static method to show the form in a dialog
+  static Future<RidePref?> showRidePrefForm(BuildContext context,
+      {RidePref? initRidePref}) async {
+    return showDialog<RidePref>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: RidePrefForm(initRidePref: initRidePref),
+        );
+      },
+    );
+  }
 
   @override
   State<RidePrefForm> createState() => _RidePrefFormState();
@@ -78,6 +94,22 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  // Update this method to pop back to the form when a city is selected
+  void navigateToLocationPicker(
+      BuildContext context, Function(Location) onLocationSelected) {
+    Navigator.of(context)
+        .push(AnimationsUtil.createBottomToTopRoute(LocationPicker(
+      locations: uniqueFakeLocations,
+      onLocationSelected: (location) {
+        onLocationSelected(location);
+        if (widget.onLocationSelected != null) {
+          widget.onLocationSelected!(location);
+        }
+        Navigator.of(context).pop(); // Pop back to the form
+      },
+    )));
+  }
+
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
@@ -91,21 +123,28 @@ class _RidePrefFormState extends State<RidePrefForm> {
         Row(
           children: [
             Expanded(
-              child: DropdownButton<Location>(
-                hint: Text('Select Departure'),
-                value: uniqueFakeLocations.contains(departure) ? departure : null,
-                items: uniqueFakeLocations.map((location) {
-                  return DropdownMenuItem<Location>(
-                    value: location,
-                    child: Text(location.name),
-                  );
-                }).toList(),
-                onChanged: (value) {
+              child: GestureDetector(
+                onTap: () => navigateToLocationPicker(context, (location) {
                   setState(() {
-                    departure = value;
+                    departure = location;
                   });
-                },
-                icon: null, // Remove the dropdown icon
+                }),
+                child: AbsorbPointer(
+                  child: DropdownButton<Location>(
+                    hint: Text('Select Departure'),
+                    value: uniqueFakeLocations.contains(departure)
+                        ? departure
+                        : null,
+                    items: uniqueFakeLocations.map((location) {
+                      return DropdownMenuItem<Location>(
+                        value: location,
+                        child: Text(location.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) {},
+                    icon: null, // Remove the dropdown icon
+                  ),
+                ),
               ),
             ),
             IconButton(
@@ -114,21 +153,26 @@ class _RidePrefFormState extends State<RidePrefForm> {
             ),
           ],
         ),
-        DropdownButton<Location>(
-          hint: Text('Select Arrival'),
-          value: uniqueFakeLocations.contains(arrival) ? arrival : null,
-          items: uniqueFakeLocations.map((location) {
-            return DropdownMenuItem<Location>(
-              value: location,
-              child: Text(location.name),
-            );
-          }).toList(),
-          onChanged: (value) {
+        GestureDetector(
+          onTap: () => navigateToLocationPicker(context, (location) {
             setState(() {
-              arrival = value;
+              arrival = location;
             });
-          },
-          icon: null, // Remove the dropdown icon
+          }),
+          child: AbsorbPointer(
+            child: DropdownButton<Location>(
+              hint: Text('Select Arrival'),
+              value: uniqueFakeLocations.contains(arrival) ? arrival : null,
+              items: uniqueFakeLocations.map((location) {
+                return DropdownMenuItem<Location>(
+                  value: location,
+                  child: Text(location.name),
+                );
+              }).toList(),
+              onChanged: (value) {},
+              icon: null, // Remove the dropdown icon
+            ),
+          ),
         ),
         Row(
           children: [
@@ -166,6 +210,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
                   );
                   // Add the ridePref to the history
                   fakeRidePrefs.add(ridePref);
+                  Navigator.of(context).pop(ridePref); // Return the ridePref
                 }
               : () {},
         ),
