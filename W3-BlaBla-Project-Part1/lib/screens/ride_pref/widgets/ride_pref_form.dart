@@ -84,8 +84,8 @@ class _RidePrefFormState extends State<RidePrefForm> {
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: departureDate,
-      firstDate: DateTime(2000),
+      initialDate: DateTime.now(), // Set initial date to today
+      firstDate: DateTime.now(), // Prevent selecting a date before today
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != departureDate) {
@@ -136,50 +136,49 @@ class _RidePrefFormState extends State<RidePrefForm> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => navigateToLocationPicker(context, (location) {
-                    setState(() {
-                      departure = location;
-                    });
-                  }),
-                  child: AbsorbPointer(
-                    child: DropdownButton<Location>(
-                      hint: Text('Select Departure'),
-                      value: uniqueFakeLocations.contains(departure)
-                          ? departure
-                          : null,
-                      items: uniqueFakeLocations.map((location) {
-                        return DropdownMenuItem<Location>(
-                          value: location,
-                          child: Text(location.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) {},
-                      icon: null, // Remove the dropdown icon
-                    ),
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.swap_vert),
-                onPressed: switchLocations,
-              ),
-            ],
+          _buildLocationPicker(
+            context,
+            'Select Departure',
+            departure,
+            (location) {
+              setState(() {
+                departure = location;
+              });
+            },
           ),
           SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => navigateToLocationPicker(context, (location) {
+          _buildLocationPicker(
+            context,
+            'Select Arrival',
+            arrival,
+            (location) {
               setState(() {
                 arrival = location;
               });
-            }),
+            },
+          ),
+          SizedBox(height: 16),
+          _buildDatePicker(context, dateFormat),
+          SizedBox(height: 16),
+          _buildSeatSelector(context),
+          SizedBox(height: 16),
+          _buildSearchButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationPicker(BuildContext context, String hint,
+      Location? location, Function(Location) onLocationSelected) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => navigateToLocationPicker(context, onLocationSelected),
             child: AbsorbPointer(
               child: DropdownButton<Location>(
-                hint: Text('Select Arrival'),
-                value: uniqueFakeLocations.contains(arrival) ? arrival : null,
+                hint: Text(hint),
+                value: uniqueFakeLocations.contains(location) ? location : null,
                 items: uniqueFakeLocations.map((location) {
                   return DropdownMenuItem<Location>(
                     value: location,
@@ -191,49 +190,60 @@ class _RidePrefFormState extends State<RidePrefForm> {
               ),
             ),
           ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.calendar_today_rounded),
-                onPressed: () => selectDate(context),
-              ),
-              Text(
-                dateFormat.format(departureDate),
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
+        ),
+        if (hint == 'Select Departure')
+          IconButton(
+            icon: Icon(Icons.swap_vert),
+            onPressed: switchLocations,
           ),
-          SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => navigateToSeatSelection(context),
-            child: Row(
-              children: [
-                Text('Seats:'),
-                SizedBox(width: 8),
-                Text('$requestedSeats', style: TextStyle(fontSize: 16)),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-          BlaButton(
-            text: 'Search',
-            onPressed: isFormValid()
-                ? () {
-                    final ridePref = RidePref(
-                      departure: departure!,
-                      departureDate: departureDate,
-                      arrival: arrival!,
-                      requestedSeats: requestedSeats,
-                    );
-                    // Add the ridePref to the history
-                    fakeRidePrefs.add(ridePref);
-                    Navigator.of(context).pop(ridePref); // Return the ridePref
-                  }
-                : () {},
-          ),
+      ],
+    );
+  }
+
+  Widget _buildDatePicker(BuildContext context, DateFormat dateFormat) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.calendar_today_rounded),
+          onPressed: () => selectDate(context),
+        ),
+        Text(
+          dateFormat.format(departureDate),
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeatSelector(BuildContext context) {
+    return GestureDetector(
+      onTap: () => navigateToSeatSelection(context),
+      child: Row(
+        children: [
+          Text('Seats:'),
+          SizedBox(width: 8),
+          Text('$requestedSeats', style: TextStyle(fontSize: 16)),
         ],
       ),
+    );
+  }
+
+  Widget _buildSearchButton(BuildContext context) {
+    return BlaButton(
+      text: 'Search',
+      onPressed: isFormValid()
+          ? () {
+              final ridePref = RidePref(
+                departure: departure!,
+                departureDate: departureDate,
+                arrival: arrival!,
+                requestedSeats: requestedSeats,
+              );
+              // Add the ridePref to the history
+              fakeRidePrefs.add(ridePref);
+              Navigator.of(context).pop(ridePref); // Return the ridePref
+            }
+          : () {},
     );
   }
 }
