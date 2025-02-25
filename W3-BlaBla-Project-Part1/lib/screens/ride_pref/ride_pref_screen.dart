@@ -5,6 +5,7 @@ import '../../service/ride_prefs_service.dart';
 import '../../theme/theme.dart';
 import '../../utils/animations_util.dart';
 import 'widgets/ride_pref_form.dart';
+import '../ride/ride_screen.dart';
 
 import 'widgets/ride_pref_history_tile.dart';
 
@@ -35,7 +36,16 @@ class _RidePrefScreenState extends State<RidePrefScreen> {
   final _dateController = TextEditingController();
 
   onRidePrefSelected(RidePref ridePref) {
-    // 1 - Navigate to the rides screen (with a buttom to top animation)
+    Navigator.of(context).push(AnimationsUtil.createBottomToTopRoute(
+      RideScreen(
+        rides: RidePrefService.getMatchingRides(ridePref),
+        onRideSelected: (ride) {
+          // Handle ride selection
+          // For now, just print the selected ride
+          print('Selected ride: $ride');
+        },
+      ),
+    ));
   }
 
   @override
