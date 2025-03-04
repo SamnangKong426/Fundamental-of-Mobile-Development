@@ -6,7 +6,7 @@ import '../../model/ride_pref/ride_pref.dart';
 import '../../service/rides_service.dart';
 import '../ride_repository.dart';
 
-class MockRideRepository implements RidesRepository {
+class MockRidesRepository implements RidesRepository {
   final List<RidePreference> _ridePreferences = [
     RidePreference(
       departure: fakeLocations[40], // Battambang
