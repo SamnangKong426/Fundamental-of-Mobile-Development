@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:w4_blabla_project_part2/repository/mock_locations_repository.dart';
+import 'package:w4_blabla_project_part2/repository/mock/mock_locations_repository.dart';
 
 import '../../model/ride/locations.dart';
 import '../../service/locations_service.dart';
