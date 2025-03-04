@@ -93,6 +93,10 @@ class _RidePrefFormState extends State<RidePrefForm> {
   }
 
   void onSubmit() {
+    print(departure);
+    print(arrival);
+    print(departureDate);
+    
     // 1- Check input validity
     bool hasDeparture = departure != null;
     bool hasArrival = arrival != null;
