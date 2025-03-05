@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:w4_blabla_project_part2/screens/ride_pref/widgets/ride_pref_filter.dart';
 
 import '../../dummy_data/dummy_data.dart';
 import '../../model/ride/ride.dart';
@@ -57,7 +58,14 @@ class _RidesScreenState extends State<RidesScreen> {
     }
   }
 
-  void onFilterPressed() {}
+  void onFilterPressed() {
+    print("onFilterPressed");
+    Navigator.of(context).push<RidePreference>(
+      MaterialPageRoute(
+        builder: (ctx) => RidePrefFilter(currentPreference: currentPreference!),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
