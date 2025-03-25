@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week_3_blabla_project/provider/ride_preference_provider.dart';
-import 'package:week_3_blabla_project/repository/mock/mock_ride_preferences_repository.dart';
-import 'package:week_3_blabla_project/repository/ride_preferences_repository.dart';
+import 'package:week_3_blabla_project/ui/providers/ride_preference_provider.dart';
 
 import '../../../model/ride/ride_pref.dart';
-// import '../../../service/ride_prefs_service.dart';
-import '../../../provider/async_value.dart';
+import '../../providers/async_value.dart';
 import '../../theme/theme.dart';
 
 import '../../../utils/animations_util.dart';
