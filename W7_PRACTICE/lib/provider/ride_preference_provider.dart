@@ -2,18 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:week_3_blabla_project/repository/mock/mock_ride_preferences_repository.dart';
 import '../model/ride/ride_pref.dart';
 import '../repository/ride_preferences_repository.dart';
+import 'async_value.dart';
 
 class RidesPreferencesProvider extends ChangeNotifier {
   RidePreference? _currentPreference;
   List<RidePreference> _pastPreferences = [];
   final RidePreferencesRepository repository;
 
+  late AsyncValue<List<RidePreference>> pastPreferences;
+
   RidesPreferencesProvider({required this.repository}) {
-    // For now past preferences are fetched only 1 time
-    _pastPreferences = repository.getPastPreferences();
+    // Initialize pastPreferences with a loading state
+    pastPreferences = AsyncValue.loading();
+    // Fetch past preferences asynchronously
+    fetchPastPreferences();
   }
 
   RidePreference? get currentPreference => _currentPreference;
+
+  Future<void> fetchPastPreferences() async {
+    // 1- Handle loading
+    pastPreferences = AsyncValue.loading();
+    notifyListeners();
+    try {
+      // 2 Fetch data
+      List<RidePreference> pastPrefs = await repository.getPastPreferences();
+      // 3 Handle success
+      pastPreferences = AsyncValue.success(pastPrefs);
+      // 4 Handle error
+    } catch (error) {
+      pastPreferences = AsyncValue.error(error);
+    }
+    notifyListeners();
+  }
+
   void setCurrentPreferrence(RidePreference pref) {
     // 1- We process only if the new preference is not equal to the current one
     if (_currentPreference != pref) {
@@ -30,12 +52,19 @@ class RidesPreferencesProvider extends ChangeNotifier {
     }
   }
 
-  void _addPreference(RidePreference preference) {
-    // new preference must not in _pastPreferences
-    if (!_pastPreferences.contains(preference)) {
-      _pastPreferences.add(preference);
-      print('Add pref to history : $_currentPreference');
-      notifyListeners();
+  Future<void> _addPreference(RidePreference preference) async {
+    /* 
+      The first approach ensures data consistency, 
+      simplifies error handling, and is more scalable for future use cases. 
+      It is the most reliable and maintainable solution for managing 
+      asynchronous operations in the RidesPreferencesProvider. 
+    */
+
+    try {
+      await repository.addPreference(preference);
+      await fetchPastPreferences();
+    } catch (error) {
+      print('Error adding preference: $error');
     }
   }
 

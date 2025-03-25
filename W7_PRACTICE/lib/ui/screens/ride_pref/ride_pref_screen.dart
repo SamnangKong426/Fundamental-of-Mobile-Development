@@ -6,9 +6,11 @@ import 'package:week_3_blabla_project/repository/ride_preferences_repository.dar
 
 import '../../../model/ride/ride_pref.dart';
 // import '../../../service/ride_prefs_service.dart';
+import '../../../provider/async_value.dart';
 import '../../theme/theme.dart';
 
 import '../../../utils/animations_util.dart';
+import '../../widgets/errors/bla_error.dart';
 import '../rides/rides_screen.dart';
 import 'widgets/ride_pref_form.dart';
 import 'widgets/ride_pref_history_tile.dart';
@@ -40,63 +42,80 @@ class RidePrefScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RidesPreferencesProvider>(
       builder: (BuildContext context, ridesPreferences, Widget? child) {
-        RidePreference? currentRidePreference =
-            ridesPreferences.currentPreference;
-        List<RidePreference> pastPreferences =
-            ridesPreferences.preferencesHistory;
+        final pastPreferencesState = ridesPreferences.pastPreferences;
 
-        return Stack(
-          children: [
-            // 1 - Background  Image
-            BlaBackground(),
+        // Handle the states of pastPreferences
+        switch (pastPreferencesState.state) {
+          case AsyncValueState.loading:
+            return const Center(
+              child: BlaError(message: 'Loading...'),
+            );
 
-            // 2 - Foreground content
-            Column(
+          case AsyncValueState.error:
+            return const Center(
+              child: BlaError(message: 'No connection. Try later.'),
+            );
+
+          case AsyncValueState.success:
+            final pastPreferences = pastPreferencesState.data!;
+            final currentRidePreference = ridesPreferences.currentPreference;
+
+            return Stack(
               children: [
-                SizedBox(height: BlaSpacings.m),
-                Text(
-                  "Your pick of rides at low price",
-                  style: BlaTextStyles.heading.copyWith(color: Colors.white),
-                ),
-                SizedBox(height: 100),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
-                  decoration: BoxDecoration(
-                    color: Colors.white, // White background
-                    borderRadius: BorderRadius.circular(16), // Rounded corners
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 2.1 Display the Form to input the ride preferences
-                      RidePrefForm(
-                          initialPreference: currentRidePreference,
-                          onSubmit: (ridePreference) =>
-                              onRidePrefSelected(context, ridePreference)),
-                      SizedBox(height: BlaSpacings.m),
+                // 1 - Background Image
+                const BlaBackground(),
 
-                      // 2.2 Optionally display a list of past preferences
-                      SizedBox(
-                        height: 200, // Set a fixed height
-                        child: ListView.builder(
-                          shrinkWrap: true, // Fix ListView height issue
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: pastPreferences.length,
-                          itemBuilder: (ctx, index) => RidePrefHistoryTile(
-                            ridePref: pastPreferences[index],
-                            onPressed: () => onRidePrefSelected(
-                                context, pastPreferences[index]),
-                          ),
-                        ),
+                // 2 - Foreground content
+                Column(
+                  children: [
+                    SizedBox(height: BlaSpacings.m),
+                    Text(
+                      "Your pick of rides at low price",
+                      style:
+                          BlaTextStyles.heading.copyWith(color: Colors.white),
+                    ),
+                    SizedBox(height: 100),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
+                      decoration: BoxDecoration(
+                        color: Colors.white, // White background
+                        borderRadius:
+                            BorderRadius.circular(16), // Rounded corners
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // 2.1 Display the Form to input the ride preferences
+                          RidePrefForm(
+                            initialPreference: currentRidePreference,
+                            onSubmit: (ridePreference) =>
+                                onRidePrefSelected(context, ridePreference),
+                          ),
+                          SizedBox(height: BlaSpacings.m),
+
+                          // 2.2 Optionally display a list of past preferences
+                          SizedBox(
+                            height: 200, // Set a fixed height
+                            child: ListView.builder(
+                              shrinkWrap: true, // Fix ListView height issue
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: pastPreferences.length,
+                              itemBuilder: (ctx, index) => RidePrefHistoryTile(
+                                ridePref: pastPreferences[index],
+                                onPressed: () => onRidePrefSelected(
+                                    context, pastPreferences[index]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
-        );
+            );
+        }
       },
     );
   }
