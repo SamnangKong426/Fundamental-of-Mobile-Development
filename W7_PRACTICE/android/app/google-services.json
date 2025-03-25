@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "315030314523",
+    "firebase_url": "https://blablarcar-9ac2d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "blablarcar-9ac2d",
+    "storage_bucket": "blablarcar-9ac2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315030314523:android:ff53a1cc81d4681c4522be",
+        "android_client_info": {
+          "package_name": "com.example.week_3_blabla_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfzu3jdhNyuRMipliUEIoKhbHz1ZenmN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

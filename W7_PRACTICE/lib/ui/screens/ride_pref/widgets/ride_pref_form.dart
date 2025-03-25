@@ -44,7 +44,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // ----------------------------------
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _initializeForm();
   }

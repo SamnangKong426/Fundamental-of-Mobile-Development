@@ -27,12 +27,19 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
   @override
   void initState() {
     super.initState();
-
+  
     if (widget.initLocation != null) {
       String city = widget.initLocation!.name;
-      filteredLocations = LocationsService.instance.getLocationsFor(city);
+  
+      // Fetch locations asynchronously
+      LocationsService.instance.getLocationsFor(city).then((locations) {
+        setState(() {
+          filteredLocations = locations; // Update the state with the resolved list
+        });
+      });
     }
   }
+
 
   void onBackSelected() {
     Navigator.of(context).pop();
@@ -42,12 +49,12 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
     Navigator.of(context).pop(location);
   }
 
-  void onSearchChanged(String searchText) {
+  void onSearchChanged(String searchText) async {
     List<Location> newSelection = [];
 
     if (searchText.length > 1) {
       // We start to search from 2 characters only.
-      newSelection = LocationsService.instance.getLocationsFor(searchText);
+      newSelection = await LocationsService.instance.getLocationsFor(searchText);
     }
 
     setState(() {
